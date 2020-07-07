@@ -85,10 +85,18 @@ bool xpt2046_read(lv_indev_drv_t * drv, lv_indev_data_t * data)
 		uint8_t data[2];
 		
 		tp_spi_read_reg(CMD_X_READ, data, 2);
+        #if (ROTATE_90_DEG)
+		y = (data[0] << 8) | data[1];
+        #else
 		x = (data[0] << 8) | data[1];
+        #endif  // ROTATE_90_DEG
 		
 		tp_spi_read_reg(CMD_Y_READ, data, 2);
+        #if (ROTATE_90_DEG)
+		x = (data[0] << 8) | data[1];
+        #else
 		y = (data[0] << 8) | data[1];
+        #endif  // ROTATE_90_DEG
 		
         /*Normalize Data back to 12-bits*/
         x = x >> 4;

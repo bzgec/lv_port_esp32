@@ -20,11 +20,17 @@
 /*====================
    Graphical settings
  *====================*/
+/* Rotate display for 90 deg */
+#define ROTATE_90_DEG 1  // Must be 0 or 1 (1 to rotate)
 
 /* Maximal horizontal and vertical resolution to support by the library.*/
+#if (ROTATE_90_DEG)
+#define LV_HOR_RES_MAX          (CONFIG_LVGL_DISPLAY_HEIGHT)
+#define LV_VER_RES_MAX          (CONFIG_LVGL_DISPLAY_WIDTH)
+#else
 #define LV_HOR_RES_MAX          (CONFIG_LVGL_DISPLAY_WIDTH)
 #define LV_VER_RES_MAX          (CONFIG_LVGL_DISPLAY_HEIGHT)
-
+#endif  // ROTATE_90_DEG
 /* Color depth:
  * - 1:  1 byte per pixel
  * - 8:  RGB233

@@ -1,3 +1,5 @@
+if(ESP_PLATFORM)
+
 set(SOURCES "disp_driver.c")
 
 # Include only the source file of the selected
@@ -25,6 +27,10 @@ elseif(CONFIG_LVGL_TFT_DISPLAY_CONTROLLER_FT81X)
     list(APPEND SOURCES "FT81x.c")
 elseif(CONFIG_LVGL_TFT_DISPLAY_CONTROLLER_IL3820)
     list(APPEND SOURCES "il3820.c")
+elseif(CONFIG_LVGL_TFT_DISPLAY_CONTROLLER_JD79653A)
+    list(APPEND SOURCES "jd79653a.c")
+elseif(CONFIG_LVGL_TFT_DISPLAY_CONTROLLER_UC8151D)
+    list(APPEND SOURCES "uc8151d.c")
 elseif(CONFIG_LVGL_TFT_DISPLAY_CONTROLLER_RA8875)
     list(APPEND SOURCES "ra8875.c")
 elseif(CONFIG_LVGL_TFT_DISPLAY_CONTROLLER_GC9A01)
@@ -43,3 +49,5 @@ message("SOURCES contents: " "${SOURCES}")
 idf_component_register(SRCS ${SOURCES}
                        INCLUDE_DIRS .
                        REQUIRES lvgl)
+
+endif()

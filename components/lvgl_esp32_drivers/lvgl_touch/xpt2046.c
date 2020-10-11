@@ -51,6 +51,8 @@ uint8_t avg_last;
  */
 void xpt2046_init(void)
 {
+    uint8_t data[3] = {0};
+
     gpio_config_t irq_config = {
         .pin_bit_mask = BIT64(XPT2046_IRQ),
         .mode = GPIO_MODE_INPUT,
@@ -63,6 +65,14 @@ void xpt2046_init(void)
 
     esp_err_t ret = gpio_config(&irq_config);
     assert(ret == ESP_OK);
+
+    /*
+     * https://github.com/spapadim/XPT2046
+     * 
+     * Make sure PENIRQ is enabled
+     */
+    data[0] = 0b11010100;
+    tp_spi_write_reg(data, sizeof(data));
 }
 
 /**
@@ -102,6 +112,32 @@ bool xpt2046_read(lv_indev_drv_t * drv, lv_indev_data_t * data)
         last_y = y;
 
 		ESP_LOGI(TAG, "x = %d, y = %d", x, y);
+        // uint8_t buf[3];
+        // uint16_t wTmp;
+
+        // tp_spi_read_reg(0b10100101, buf, 2);
+        // wTmp = (buf[0] << 8) | buf[1];
+        // wTmp = wTmp >> 4;  // Normalize Data back to 12-bits
+        // printf("ADC_B1: %u\n", wTmp);
+        // printf("Volt: %0.2f\n", wTmp*4*0.0008056640625);
+        // tp_spi_read_reg(0b10100101, buf, 2);
+        // wTmp = (buf[0] << 8) | buf[1];
+        // wTmp = wTmp >> 4;  // Normalize Data back to 12-bits
+        // printf("ADC_B2: %u\n", wTmp);
+        // printf("Volt: %0.2f\n", wTmp*4*0.0008056640625);
+
+        // tp_spi_read_reg((uint8_t)0b10000101, buf, 2);
+        // wTmp = (buf[0] << 8) | buf[1];
+        // wTmp = wTmp >> 4;  // Normalize Data back to 12-bits
+        // printf("ADC_1: %u\n", wTmp);
+        // tp_spi_read_reg((uint8_t)0b11110101, buf, 2);
+        // wTmp = (buf[0] << 8) | buf[1];
+        // wTmp = wTmp >> 4;  // Normalize Data back to 12-bits
+        // printf("ADC_2: %u\n", wTmp);
+        // buf[0] = 0b11010100;
+        // buf[1] = 0x00;
+        // buf[2] = 0x00;
+        // tp_spi_write_reg(buf, 3);
     } else {
         x = last_x;
         y = last_y;
@@ -112,6 +148,7 @@ bool xpt2046_read(lv_indev_drv_t * drv, lv_indev_data_t * data)
     data->point.x = x;
     data->point.y = y;
     data->state = valid == false ? LV_INDEV_STATE_REL : LV_INDEV_STATE_PR;
+
 
     return false;
 }
